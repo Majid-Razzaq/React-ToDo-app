@@ -1,18 +1,49 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 function App() {
 
   const [text, setText] = useState('');
+  const [tasks, setTasks] = useState([]);
 
-  const addForm = (e) => {
+  const addForm = async (e) => {
     e.preventDefault();
 
     if(!text){
       alert("Task can not be blank");
       return;
     }
+
+    const formData = {
+      title: text,
+      status: 'active',
+    }
+
+    const res = await fetch('http://localhost:3500/tasks',{
+      method: 'POST',
+      headers:{
+        'Content-type': 'application/json',
+      },
+      body: JSON.stringify(formData),
+    });
+
+    const data = await res.json();
+    setTasks([...tasks, data]);
+    setText('');
+    //console.log(data);
   }
+
+  const fetchTask = async () => {
+    const res = await fetch('http://localhost:3500/tasks');
+    const data = await res.json();
+    //console.log(data);
+    setTasks(data);
+  }
+
+  useEffect(() => {
+    fetchTask();
+  },[]);
+
   return (
     <div className="App">
       <div className='bg-dark'>
@@ -43,24 +74,29 @@ function App() {
                         <div className='col-md-12'>
                           <table className='table table-striped'>
                             <tbody>
-                              <tr>
-                                <td>
-                                    <div className='form-check'>
-                                        <input className='form-check-input' type='checkbox' checked="" />
-                                        <label className='form-check-label text-completed'>Buy some coffee</label>
-                                    </div>
-                                </td>
-                                <td width="130">
-                                  <a href='#' className='btn btn-sm btn-primary'>
-                                    Edit
-                                  </a>
-
-                                  <a href='#' className='btn btn-sm btn-danger ms-2'>
-                                    Delete
-                                  </a>
-
-                                </td>
-                              </tr>
+                              {
+                                tasks.map((tasks) => {
+                                  return (<tr key={tasks.id}>
+                                      <td>
+                                          <div className='form-check'>
+                                              <input className='form-check-input' type='checkbox'/>
+                                              <label className='form-check-label text-completed'>{tasks.title}</label>
+                                          </div>
+                                      </td>
+                                      <td width="130">
+                                        <a href='{task.id}' className='btn btn-sm btn-primary'>
+                                          Edit
+                                        </a>
+      
+                                        <a href='#' className='btn btn-sm btn-danger ms-2'>
+                                          Delete
+                                        </a>
+      
+                                      </td>
+                                    </tr>)
+                                }) 
+                              }
+                      
                             </tbody>
 
                           </table>
