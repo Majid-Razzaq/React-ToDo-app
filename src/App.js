@@ -5,6 +5,9 @@ function App() {
 
   const [text, setText] = useState('');
   const [tasks, setTasks] = useState([]);
+  const [taskAddForm, setTaskAddForm] = useState(true);
+  const [taskEditForm, setTaskEditForm] = useState(false);
+  const [task, setTask] = useState('');
 
   const addForm = async (e) => {
     e.preventDefault();
@@ -33,15 +36,56 @@ function App() {
     //console.log(data);
   }
 
-  const fetchTask = async () => {
+  const fetchTasks = async () => {
     const res = await fetch('http://localhost:3500/tasks');
     const data = await res.json();
     //console.log(data);
     setTasks(data);
   }
 
+  const showEditForm = async (id) => {
+    setTaskAddForm(false);
+    setTaskEditForm(true);
+    fetchTask(id);
+  }
+
+  const fetchTask = async (id) => {
+    const res = await fetch('http://localhost:3500/tasks/' +id);
+    const data = await res.json();
+    setText(data.title);
+    setTask(data)
+  }
+
+  const updateTask = async (e) => {
+    e.preventDefault();
+    
+    if(!text){
+      alert("Task can not be blank");
+      return;
+    }
+
+    const formData = {
+      title: text,
+      status: task.status,
+    }
+
+    const res = await fetch('http://localhost:3500/tasks/'+task.id,{
+      method: 'PUT',
+      headers:{
+        'Content-type': 'application/json',
+      },
+      body: JSON.stringify(formData),
+    });
+
+    const data = await res.json();
+    setTasks(tasks.map((taskIt) => taskIt.id ===  task.id ? {...taskIt, title: data.title, status: data.status} : taskIt));
+    setText('');
+    setTaskAddForm(true);
+    setTaskEditForm(false);
+  }
+
   useEffect(() => {
-    fetchTask();
+    fetchTasks();
   },[]);
 
   return (
@@ -59,16 +103,32 @@ function App() {
                       <h1 className='h3'>Tasks</h1>
                   </div>
                   <div className='card-body'>
-                    <form onSubmit={addForm}>
+
+                    { taskAddForm == true && <form onSubmit={addForm}>
+                          <div className='row'>
+                              <div className='col-md-10 mb-3'>
+                                  <input value={text} onChange={(e) => setText(e.target.value)} className='form-control' type='text' placeholder='Enter your Task'/>
+                              </div>
+                              <div className='col-md-2 mb-3'>
+                                <button className='btn btn-dark'>ADD</button>
+                              </div>
+                            </div>
+                        </form>
+                    }
+                 
+
+                 {
+                    taskEditForm == true && <form onSubmit={updateTask}>
                       <div className='row'>
                           <div className='col-md-10 mb-3'>
                               <input value={text} onChange={(e) => setText(e.target.value)} className='form-control' type='text' placeholder='Enter your Task'/>
                           </div>
                           <div className='col-md-2 mb-3'>
-                            <button className='btn btn-dark'>Add</button>
+                            <button className='btn btn-dark'>UPDATE</button>
                           </div>
                         </div>
                     </form>
+                 }
 
                       <div className='row'>
                         <div className='col-md-12'>
@@ -84,7 +144,7 @@ function App() {
                                           </div>
                                       </td>
                                       <td width="130">
-                                        <a href='{task.id}' className='btn btn-sm btn-primary'>
+                                        <a href='#' onClick={() => showEditForm(tasks.id)} className='btn btn-sm btn-primary'>
                                           Edit
                                         </a>
       
