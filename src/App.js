@@ -81,7 +81,18 @@ function App() {
     setTasks(tasks.map((taskIt) => taskIt.id ===  task.id ? {...taskIt, title: data.title, status: data.status} : taskIt));
     setText('');
     setTaskAddForm(true);
-    setTaskEditForm(false);
+    setTaskEditForm(false); 
+  }
+
+  const deleteTask = async (id) => {
+    if(window.confirm("Are you sure you want to delete?")){
+        const res = await fetch('http://localhost:3500/tasks/'+ id,{
+          method: 'DELETE',
+      });
+
+      setTasks(tasks.filter((task) => task.id != id));
+
+      }
   }
 
   useEffect(() => {
@@ -135,20 +146,20 @@ function App() {
                           <table className='table table-striped'>
                             <tbody>
                               {
-                                tasks.map((tasks) => {
-                                  return (<tr key={tasks.id}>
+                                tasks.map((task) => {
+                                  return (<tr key={task.id}>
                                       <td>
                                           <div className='form-check'>
                                               <input className='form-check-input' type='checkbox'/>
-                                              <label className='form-check-label text-completed'>{tasks.title}</label>
+                                              <label className='form-check-label text-completed'>{task.title}</label>
                                           </div>
                                       </td>
                                       <td width="130">
-                                        <a href='#' onClick={() => showEditForm(tasks.id)} className='btn btn-sm btn-primary'>
+                                        <a href='#' onClick={() => showEditForm(task.id)} className='btn btn-sm btn-primary'>
                                           Edit
                                         </a>
       
-                                        <a href='#' className='btn btn-sm btn-danger ms-2'>
+                                        <a href='#' onClick={() => deleteTask(task.id)} className='btn btn-sm btn-danger ms-2'>
                                           Delete
                                         </a>
       

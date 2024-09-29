@@ -4,21 +4,6 @@
       "title": "first task",
       "status": "active",
       "id": "1"
-    },
-    {
-      "title": "second Task (updated)",
-      "status": "active",
-      "id": "b92d"
-    },
-    {
-      "id": "85d8",
-      "title": "third task",
-      "status": "active"
-    },
-    {
-      "id": "0261",
-      "title": "forth task",
-      "status": "active"
     }
   ]
 }
