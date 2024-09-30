@@ -1,8 +1,10 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useEffect, useState } from 'react';
+import './style.css';
 
 function App() {
 
+  const [activeClass, setActiveClass] = useState('all');
   const [text, setText] = useState('');
   const [tasks, setTasks] = useState([]);
   const [taskAddForm, setTaskAddForm] = useState(true);
@@ -40,6 +42,20 @@ function App() {
     const res = await fetch('http://localhost:3500/tasks');
     const data = await res.json();
     //console.log(data);
+    setTasks(data);
+  }
+
+  // filter your data using this method
+  const filterTasks = async (status) => {
+    setActiveClass(status);
+
+    if(status == 'all'){
+      fetchTasks();
+      return;
+    }
+
+    const res = await fetch('http://localhost:3500/tasks?status='+ status);
+    const data = await res.json();
     setTasks(data);
   }
 
@@ -163,6 +179,15 @@ function App() {
                  }
 
                       <div className='row'>
+
+                        <div className='col-md-12 mb-3'>
+                          <div className='btn-group' role='group' aria-label='Basic example'>
+                              <button onClick={() => filterTasks('all')} type='button' className={`btn btn-primary ${activeClass == 'all' && 'active'}`}>All</button>
+                              <button onClick={() => filterTasks('active')} type='button' className={`btn btn-primary ${activeClass == 'active' && 'active'}`}>Active</button>
+                              <button onClick={() => filterTasks('completed')} type='button' className={`btn btn-primary ${activeClass == 'completed' && 'active'}`}>Completed</button>
+                          </div>
+                        </div>
+
                         <div className='col-md-12'>
                           <table className='table table-striped'>
                             <tbody>
@@ -172,7 +197,7 @@ function App() {
                                       <td>
                                           <div className='form-check'>
                                               <input defaultChecked={task.status == 'completed'} onClick={(e) => updateTaskStatus(e,task)} className='form-check-input' type='checkbox' id={`status-${task.id}`} />
-                                              <label className='form-check-label text-completed' htmlFor={`status-${task.id}`}>{task.title}</label>
+                                              <label className={`form-check-label ${task.status == 'completed' && 'text-completed'}`} htmlFor={`status-${task.id}`}>{task.title}</label>
                                           </div>
                                       </td>
                                       <td width="130">

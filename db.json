@@ -2,13 +2,23 @@
   "tasks": [
     {
       "title": "first task",
-      "status": "completed",
+      "status": "active",
       "id": "1"
     },
     {
       "title": "Second Task",
-      "status": "active",
+      "status": "completed",
       "id": "2a4d"
+    },
+    {
+      "title": "third task",
+      "status": "completed",
+      "id": "fcc0"
+    },
+    {
+      "title": "forth task - update",
+      "status": "active",
+      "id": "dcd9"
     }
   ]
 }
