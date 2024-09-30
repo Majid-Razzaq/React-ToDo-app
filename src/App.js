@@ -95,6 +95,27 @@ function App() {
       }
   }
 
+  const updateTaskStatus = async (e, taskObj) => {
+
+    const status = (e.target.checked) ? 'completed' : 'active';
+    const formData = {
+      title: taskObj.title,
+      status: status,
+    }
+
+    const res = await fetch('http://localhost:3500/tasks/'+taskObj.id,{
+      method: 'PUT',
+      headers:{
+        'Content-type': 'application/json',
+      },
+      body: JSON.stringify(formData),
+    });
+
+    const data = await res.json();
+    setTasks(tasks.map((taskIt) => taskIt.id ===  taskObj.id ? {...taskIt, status: data.status} : taskIt));
+   
+  }
+
   useEffect(() => {
     fetchTasks();
   },[]);
@@ -150,8 +171,8 @@ function App() {
                                   return (<tr key={task.id}>
                                       <td>
                                           <div className='form-check'>
-                                              <input className='form-check-input' type='checkbox'/>
-                                              <label className='form-check-label text-completed'>{task.title}</label>
+                                              <input defaultChecked={task.status == 'completed'} onClick={(e) => updateTaskStatus(e,task)} className='form-check-input' type='checkbox' id={`status-${task.id}`} />
+                                              <label className='form-check-label text-completed' htmlFor={`status-${task.id}`}>{task.title}</label>
                                           </div>
                                       </td>
                                       <td width="130">

@@ -2,8 +2,13 @@
   "tasks": [
     {
       "title": "first task",
-      "status": "active",
+      "status": "completed",
       "id": "1"
+    },
+    {
+      "title": "Second Task",
+      "status": "active",
+      "id": "2a4d"
     }
   ]
 }
