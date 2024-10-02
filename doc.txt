@@ -7,3 +7,4 @@ first we include bootstrap in react for this we will search react bootstrap, imp
 after all we will use json-server 
 start your code in app.js file
 after add input field we run this command (json-server --watch db.json --port=3500)
+run npm start
