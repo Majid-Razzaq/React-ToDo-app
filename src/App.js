@@ -1,6 +1,9 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useEffect, useState } from 'react';
 import './style.css';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import React from 'react';
 
 function App() {
 
@@ -36,6 +39,9 @@ function App() {
     setTasks([...tasks, data]);
     setText('');
     //console.log(data);
+
+    toast("Task added successfully.");
+
   }
 
   const fetchTasks = async () => {
@@ -49,7 +55,7 @@ function App() {
   const filterTasks = async (status) => {
     setActiveClass(status);
 
-    if(status == 'all'){
+    if(status == 'all'){  
       fetchTasks();
       return;
     }
@@ -98,6 +104,9 @@ function App() {
     setText('');
     setTaskAddForm(true);
     setTaskEditForm(false); 
+
+    toast("Task updated successfully.");
+
   }
 
   const deleteTask = async (id) => {
@@ -109,6 +118,9 @@ function App() {
       setTasks(tasks.filter((task) => task.id != id));
 
       }
+
+      toast("Task deleted successfully.");
+
   }
 
   const updateTaskStatus = async (e, taskObj) => {
@@ -129,7 +141,7 @@ function App() {
 
     const data = await res.json();
     setTasks(tasks.map((taskIt) => taskIt.id ===  taskObj.id ? {...taskIt, status: data.status} : taskIt));
-   
+
   }
 
   useEffect(() => {
@@ -138,6 +150,9 @@ function App() {
 
   return (
     <div className="App">
+
+      <ToastContainer />
+
       <div className='bg-dark'>
         <div className='container'>
           <h1 className='text-white py-3 text-center'>React To Do App</h1>
